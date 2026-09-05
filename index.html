@@ -13,12 +13,10 @@
             box-sizing: border-box;
         }
 
-        html {
-            scroll-behavior: smooth;
-        }
+        html { scroll-behavior: smooth; }
 
         body {
-            font-family: Arial, Helvetica, sans-serif;
+            font-family: -apple-system, "Segoe UI", Roboto, Arial, Helvetica, sans-serif;
             background: #050505;
             background-image:
                 radial-gradient(circle at 15% 0%, rgba(120,120,255,0.08), transparent 40%),
@@ -27,10 +25,7 @@
             min-height: 100vh;
         }
 
-        /* =========================
-           CABEÇALHO
-        ========================= */
-
+        /* HEADER */
         header {
             position: sticky;
             top: 0;
@@ -51,321 +46,174 @@
             justify-content: space-between;
         }
 
-        .logo-area {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            text-decoration: none;
-            color: #fff;
-        }
+        .logo-area { display: flex; align-items: center; gap: 12px; text-decoration: none; color: #fff; }
 
         .logo {
-            width: 42px;
-            height: 42px;
-            border-radius: 13px;
+            width: 42px; height: 42px; border-radius: 13px;
             background: linear-gradient(145deg, #444444, #080808);
             border: 1px solid #3b3b3b;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 19px;
-            font-weight: bold;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 19px; font-weight: bold;
             box-shadow: 0 0 18px rgba(255,255,255,0.08);
         }
 
-        .logo-name {
-            font-size: 21px;
-            font-weight: 800;
-            letter-spacing: 0.5px;
-        }
+        .logo-name { font-size: 21px; font-weight: 800; letter-spacing: 0.5px; }
 
         .menu-button {
-            padding: 10px 17px;
-            border: 1px solid #292929;
-            border-radius: 30px;
-            color: #ddd;
-            text-decoration: none;
-            font-size: 14px;
-            transition: 0.25s;
+            padding: 10px 17px; border: 1px solid #292929; border-radius: 30px;
+            color: #ddd; text-decoration: none; font-size: 14px; transition: 0.25s;
         }
+        .menu-button:hover { background: #ffffff; color: #000000; }
 
-        .menu-button:hover {
-            background: #ffffff;
-            color: #000000;
-        }
-
-        /* =========================
-           HERO
-        ========================= */
-
-        .hero {
-            width: 92%;
-            max-width: 1100px;
-            margin: auto;
-            padding: 75px 0 45px;
-        }
+        /* HERO */
+        .hero { width: 92%; max-width: 1100px; margin: auto; padding: 75px 0 45px; }
 
         .badge {
-            display: inline-block;
-            padding: 8px 13px;
-            border-radius: 30px;
-            border: 1px solid #303030;
-            background: #0c0c0c;
-            color: #bdbdbd;
-            font-size: 11px;
-            font-weight: bold;
-            letter-spacing: 1px;
-            text-transform: uppercase;
+            display: inline-block; padding: 8px 13px; border-radius: 30px;
+            border: 1px solid #303030; background: #0c0c0c; color: #bdbdbd;
+            font-size: 11px; font-weight: bold; letter-spacing: 1px; text-transform: uppercase;
         }
 
-        .hero h1 {
-            margin-top: 20px;
-            font-size: clamp(42px, 8vw, 76px);
-            line-height: 0.95;
-            letter-spacing: -3px;
-        }
+        .hero h1 { margin-top: 20px; font-size: clamp(42px, 8vw, 76px); line-height: 0.95; letter-spacing: -3px; }
 
         .hero h1 span {
             background: linear-gradient(90deg, #ffffff, #8a8a8a);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
+            -webkit-background-clip: text; background-clip: text; color: transparent;
         }
 
-        .hero p {
-            margin-top: 20px;
-            max-width: 650px;
-            color: #a4a4a4;
-            font-size: 16px;
-            line-height: 1.7;
-        }
+        .hero p { margin-top: 20px; max-width: 650px; color: #a4a4a4; font-size: 16px; line-height: 1.7; }
 
-        /* =========================
-           APLICATIVOS
-        ========================= */
+        /* APPS */
+        .apps-section { width: 92%; max-width: 1100px; margin: auto; padding-bottom: 70px; }
 
-        .apps-section {
-            width: 92%;
-            max-width: 1100px;
-            margin: auto;
-            padding-bottom: 70px;
-        }
+        .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+        .section-header h2 { font-size: 26px; }
+        .section-header span { color: #777; font-size: 13px; }
 
-        .section-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 20px;
-        }
+        .apps-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; }
 
-        .section-header h2 {
-            font-size: 26px;
-        }
-
-        .section-header span {
-            color: #777;
-            font-size: 13px;
-        }
-
-        .apps-grid {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 22px;
-        }
-
-        /* =========================
-           CARD
-        ========================= */
-
+        /* CARD ESTILO PLAY STORE */
         .app-card {
             background: linear-gradient(145deg, #131313, #090909);
             border: 1px solid #282828;
             border-radius: 24px;
-            padding: 15px;
-            cursor: pointer;
+            padding: 18px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.4);
             transition: transform 0.25s, border 0.25s, box-shadow 0.25s;
         }
+        .app-card:hover { transform: translateY(-6px); border-color: #4a4a4a; box-shadow: 0 25px 70px rgba(0,0,0,0.7); }
 
-        .app-card:hover {
-            transform: translateY(-6px);
-            border-color: #4a4a4a;
-            box-shadow: 0 25px 70px rgba(0,0,0,0.7);
-        }
+        .app-top { display: flex; gap: 14px; align-items: center; }
 
-        /* =========================
-           IMAGEM
-        ========================= */
-
-        .app-image {
-            width: 100%;
-            aspect-ratio: 1.65 / 1;
-            overflow: hidden;
-            border-radius: 18px;
+        .app-icon {
+            width: 64px; height: 64px; flex-shrink: 0;
+            border-radius: 16px; overflow: hidden;
             background: linear-gradient(145deg, #1c1c1c, #0a0a0a);
             border: 1px solid #292929;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .app-icon img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .app-icon.broken img { display: none; }
+        .app-icon .fallback { display: none; font-size: 24px; }
+        .app-icon.broken .fallback { display: flex; }
+
+        .app-top-info { flex: 1; min-width: 0; }
+
+        .app-name { font-size: 18px; font-weight: 800; line-height: 1.2; }
+
+        .app-dev { color: #8a8a8a; font-size: 12.5px; margin-top: 3px; }
+
+        .app-meta {
+            display: flex; align-items: center; gap: 10px;
+            margin-top: 8px; font-size: 12px; color: #b6b6b6;
         }
 
-        .app-image img {
-            width: 100%;
-            height: 100%;
-            display: block;
-            object-fit: cover;
-        }
-
-        /* aparece se a imagem falhar ao carregar */
-        .app-image .fallback {
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-            color: #666;
-            font-size: 13px;
-        }
-
-        .app-image .fallback .icon {
-            width: 46px;
-            height: 46px;
-            border-radius: 12px;
-            background: #1f1f1f;
-            border: 1px solid #333;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 22px;
-        }
-
-        .app-image.broken img {
-            display: none;
-        }
-
-        .app-image.broken .fallback {
-            display: flex;
-        }
-
-        /* =========================
-           INFORMAÇÕES
-        ========================= */
-
-        .app-info {
-            padding: 17px 4px 3px;
-        }
-
-        .app-name {
-            font-size: 24px;
-            font-weight: 800;
-            margin-bottom: 7px;
-        }
+        .app-meta .stars { color: #ffcf4d; letter-spacing: 1px; }
 
         .app-description {
-            color: #999;
-            font-size: 14px;
-            line-height: 1.5;
-            min-height: 42px;
+            color: #999; font-size: 13.5px; line-height: 1.5;
+            margin-top: 14px;
         }
 
-        /* =========================
-           BOTÕES
-        ========================= */
-
-        .buttons {
-            display: flex;
-            gap: 10px;
-            margin-top: 16px;
-        }
+        .buttons { display: flex; gap: 10px; margin-top: 16px; }
 
         .button {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 13px;
-            border-radius: 13px;
-            border: 1px solid #303030;
-            background: #191919;
-            color: white;
-            font-size: 14px;
-            font-weight: bold;
-            text-decoration: none;
-            transition: 0.2s;
+            flex: 1; display: flex; justify-content: center; align-items: center;
+            padding: 12px; border-radius: 30px;
+            border: 1px solid #303030; background: #191919; color: white;
+            font-size: 14px; font-weight: bold; text-decoration: none;
+            transition: 0.2s; cursor: pointer;
         }
-
-        .button:hover {
-            background: #292929;
-        }
+        .button:hover { background: #292929; }
 
         .button.download {
-            background: white;
-            color: black;
-            border-color: white;
+            background: #16d16b; color: #04130a; border-color: #16d16b;
+        }
+        .button.download:hover { background: #22e37c; }
+
+        /* MODAL DE INSTRUÇÕES */
+        .modal-overlay {
+            position: fixed; inset: 0; z-index: 3000;
+            background: rgba(0,0,0,0.75);
+            display: none; align-items: flex-end; justify-content: center;
+            backdrop-filter: blur(4px);
+        }
+        .modal-overlay.open { display: flex; }
+
+        .modal-box {
+            width: 100%; max-width: 460px;
+            background: linear-gradient(160deg, #161616, #0a0a0a);
+            border: 1px solid #2c2c2c;
+            border-radius: 24px 24px 0 0;
+            padding: 26px 22px 30px;
+            animation: slideUp 0.3s ease;
+        }
+        @media (min-width: 480px) {
+            .modal-overlay { align-items: center; }
+            .modal-box { border-radius: 24px; }
+        }
+        @keyframes slideUp { from { transform: translateY(40px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        .modal-header { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
+        .modal-header .app-icon { width: 46px; height: 46px; border-radius: 12px; }
+        .modal-header h3 { font-size: 17px; }
+        .modal-header p { font-size: 12px; color: #888; margin-top: 2px; }
+
+        .steps { display: flex; flex-direction: column; gap: 14px; margin-bottom: 22px; }
+
+        .step { display: flex; gap: 12px; align-items: flex-start; }
+
+        .step-num {
+            width: 26px; height: 26px; border-radius: 50%;
+            background: #16d16b; color: #04130a; font-weight: 800; font-size: 13px;
+            display: flex; align-items: center; justify-content: center; flex-shrink: 0;
         }
 
-        .button.download:hover {
-            background: #dddddd;
-        }
+        .step-text { font-size: 13.5px; color: #cfcfcf; line-height: 1.5; }
+        .step-text strong { color: #fff; }
 
-        /* =========================
-           RODAPÉ
-        ========================= */
+        .modal-buttons { display: flex; gap: 10px; }
 
-        footer {
-            border-top: 1px solid #222;
-            padding: 35px 0 45px;
-            color: #777;
-            font-size: 13px;
-        }
+        .modal-buttons .button { padding: 14px; font-size: 14.5px; }
+        .modal-buttons .cancel { background: transparent; border: 1px solid #333; color: #aaa; flex: 0 0 auto; padding: 14px 20px; }
 
-        .footer-content {
-            width: 92%;
-            max-width: 1100px;
-            margin: auto;
-            display: flex;
-            justify-content: space-between;
-            gap: 20px;
-        }
+        /* FOOTER */
+        footer { border-top: 1px solid #222; padding: 35px 0 45px; color: #777; font-size: 13px; }
+        .footer-content { width: 92%; max-width: 1100px; margin: auto; display: flex; justify-content: space-between; gap: 20px; }
+        .footer-content strong { color: white; }
 
-        .footer-content strong {
-            color: white;
-        }
-
-        /* =========================
-           WHATSAPP
-        ========================= */
-
+        /* WHATSAPP */
         .whatsapp {
-            position: fixed;
-            right: 20px;
-            bottom: 20px;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: #20d66b;
-            color: #04130a;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 25px;
-            font-weight: bold;
-            text-decoration: none;
-            border: 3px solid #07140c;
-            box-shadow: 0 12px 35px rgba(32,214,107,0.3);
-            z-index: 2000;
-            transition: 0.25s;
+            position: fixed; right: 20px; bottom: 20px; width: 60px; height: 60px;
+            border-radius: 50%; background: #20d66b; color: #04130a;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 25px; font-weight: bold; text-decoration: none;
+            border: 3px solid #07140c; box-shadow: 0 12px 35px rgba(32,214,107,0.3);
+            z-index: 2000; transition: 0.25s;
         }
+        .whatsapp:hover { transform: scale(1.1); background: #31e779; }
 
-        .whatsapp:hover {
-            transform: scale(1.1);
-            background: #31e779;
-        }
-
-        /* =========================
-           CELULAR
-        ========================= */
-
+        /* MOBILE */
         @media (max-width: 700px) {
             .header-content { width: 94%; }
             .menu-button { display: none; }
@@ -394,7 +242,7 @@
 <section class="hero">
     <div class="badge">XSTV • Apps & MODs</div>
     <h1>Seus apps.<br><span>Em um só lugar.</span></h1>
-    <p>Encontre seus aplicativos favoritos em um só lugar. Toque no aplicativo para acessar o download rapidamente.</p>
+    <p>Encontre seus aplicativos favoritos em um só lugar. Toque em instalar e siga o passo a passo pra concluir rapidinho.</p>
 </section>
 
 <section class="apps-section" id="apps">
@@ -407,65 +255,63 @@
     <div class="apps-grid">
 
         <!-- JAGUAR TV -->
-        <article class="app-card" onclick="abrirApp('https://www.mediafire.com/file/kd8j4yhbb66cltp/Jaguar_tv.apk/file')">
-
-            <div class="app-image">
-                <img
-                    src="https://i.postimg.cc/Fs29Ct7w/images.jpg"
-                    alt="Jaguar TV"
-                    referrerpolicy="no-referrer"
-                    loading="lazy"
-                    onerror="this.parentElement.classList.add('broken')"
-                >
-                <div class="fallback">
-                    <div class="icon">📺</div>
-                    <span>Jaguar TV</span>
+        <article class="app-card">
+            <div class="app-top">
+                <div class="app-icon">
+                    <img src="https://i.postimg.cc/Fs29Ct7w/images.jpg" alt="Jaguar TV" referrerpolicy="no-referrer" onerror="this.parentElement.classList.add('broken')">
+                    <div class="fallback">📺</div>
+                </div>
+                <div class="app-top-info">
+                    <div class="app-name">Jaguar TV</div>
+                    <div class="app-dev">XSTV Apps</div>
+                    <div class="app-meta">
+                        <span class="stars">★★★★☆</span>
+                        <span>4.3</span>
+                        <span>•</span>
+                        <span>APK</span>
+                    </div>
                 </div>
             </div>
 
-            <div class="app-info">
-                <div class="app-name">Jaguar TV</div>
-                <div class="app-description">
-                    Aplicativo Jaguar TV. Clique para acessar o download pelo MediaFire.
-                </div>
-
-                <div class="buttons">
-                    <a class="button download" href="https://www.mediafire.com/file/kd8j4yhbb66cltp/Jaguar_tv.apk/file" onclick="event.stopPropagation()" target="_blank">⬇ Baixar</a>
-                    <a class="button" href="https://www.mediafire.com/file/kd8j4yhbb66cltp/Jaguar_tv.apk/file" onclick="event.stopPropagation()" target="_blank">Abrir</a>
-                </div>
+            <div class="app-description">
+                Canais ao vivo e filmes direto no seu celular. Instalação rápida via MediaFire.
             </div>
 
+            <div class="buttons">
+                <button class="button download" onclick="abrirInstrucoes('Jaguar TV', 'https://i.postimg.cc/Fs29Ct7w/images.jpg', 'https://www.mediafire.com/file/kd8j4yhbb66cltp/Jaguar_tv.apk/file')">
+                    Instalar
+                </button>
+            </div>
         </article>
 
         <!-- BRAS TV -->
-        <article class="app-card" onclick="abrirApp('https://www.mediafire.com/file/w9s5rprp8lz4qaj/BRAS_TV.apk/file')">
-
-            <div class="app-image">
-                <img
-                    src="https://i.postimg.cc/Gp9nbq84/bras-tv-logo-png.png"
-                    alt="BRAS TV"
-                    referrerpolicy="no-referrer"
-                    loading="lazy"
-                    onerror="this.parentElement.classList.add('broken')"
-                >
-                <div class="fallback">
-                    <div class="icon">📺</div>
-                    <span>BRAS TV</span>
+        <article class="app-card">
+            <div class="app-top">
+                <div class="app-icon">
+                    <img src="https://i.postimg.cc/Gp9nbq84/bras-tv-logo-png.png" alt="BRAS TV" referrerpolicy="no-referrer" onerror="this.parentElement.classList.add('broken')">
+                    <div class="fallback">📺</div>
+                </div>
+                <div class="app-top-info">
+                    <div class="app-name">BRAS TV</div>
+                    <div class="app-dev">XSTV Apps</div>
+                    <div class="app-meta">
+                        <span class="stars">★★★★★</span>
+                        <span>4.7</span>
+                        <span>•</span>
+                        <span>APK</span>
+                    </div>
                 </div>
             </div>
 
-            <div class="app-info">
-                <div class="app-name">BRAS TV</div>
-                <div class="app-description">
-                    Aplicativo BRAS TV. Clique para acessar o download pelo MediaFire.
-                </div>
-
-                <div class="buttons">
-                    <a class="button download" href="https://www.mediafire.com/file/w9s5rprp8lz4qaj/BRAS_TV.apk/file" onclick="event.stopPropagation()" target="_blank">⬇ Baixar</a>
-                    <a class="button" href="https://www.mediafire.com/file/w9s5rprp8lz4qaj/BRAS_TV.apk/file" onclick="event.stopPropagation()" target="_blank">Abrir</a>
-                </div>
+            <div class="app-description">
+                Canais ao vivo e filmes direto no seu celular. Instalação rápida via MediaFire.
             </div>
 
+            <div class="buttons">
+                <button class="button download" onclick="abrirInstrucoes('BRAS TV', 'https://i.postimg.cc/Gp9nbq84/bras-tv-logo-png.png', 'https://www.mediafire.com/file/w9s5rprp8lz4qaj/BRAS_TV.apk/file')">
+                    Instalar
+                </button>
+            </div>
         </article>
 
     </div>
@@ -481,11 +327,60 @@
 
 <a class="whatsapp" href="https://wa.me/5571991698042?text=Ol%C3%A1%20XSTV%2C%20quero%20falar%20com%20voc%C3%AA." target="_blank" rel="noopener" aria-label="Falar com XSTV no WhatsApp">☎</a>
 
+<!-- MODAL DE INSTRUÇÕES -->
+<div class="modal-overlay" id="modal">
+    <div class="modal-box">
+        <div class="modal-header">
+            <div class="app-icon" id="modalIcon">
+                <img id="modalImg" src="" alt="" referrerpolicy="no-referrer" onerror="this.parentElement.classList.add('broken')">
+                <div class="fallback">📺</div>
+            </div>
+            <div>
+                <h3 id="modalName">App</h3>
+                <p>Antes de baixar, siga os passos:</p>
+            </div>
+        </div>
+
+        <div class="steps">
+            <div class="step">
+                <div class="step-num">1</div>
+                <div class="step-text">Toque em <strong>"Baixar agora"</strong> abaixo. O arquivo <strong>.apk</strong> vai começar a baixar no MediaFire.</div>
+            </div>
+            <div class="step">
+                <div class="step-num">2</div>
+                <div class="step-text">Quando o download terminar, abra o arquivo baixado (na barra de notificações ou na pasta <strong>Downloads</strong>).</div>
+            </div>
+            <div class="step">
+                <div class="step-num">3</div>
+                <div class="step-text">Se aparecer um aviso, toque em <strong>"Permitir"</strong> ou <strong>"Instalar mesmo assim"</strong> — isso é necessário porque o app não veio da Play Store.</div>
+            </div>
+        </div>
+
+        <div class="modal-buttons">
+            <button class="button cancel" onclick="fecharInstrucoes()">Cancelar</button>
+            <a class="button download" id="modalLink" href="#" target="_blank" onclick="fecharInstrucoes()">Baixar agora</a>
+        </div>
+    </div>
+</div>
+
 <script>
-    function abrirApp(url) {
-        window.location.href = url;
-    }
     document.getElementById("ano").textContent = new Date().getFullYear();
+
+    function abrirInstrucoes(nome, icone, link) {
+        document.getElementById("modalName").textContent = nome;
+        document.getElementById("modalImg").src = icone;
+        document.getElementById("modalIcon").classList.remove("broken");
+        document.getElementById("modalLink").href = link;
+        document.getElementById("modal").classList.add("open");
+    }
+
+    function fecharInstrucoes() {
+        document.getElementById("modal").classList.remove("open");
+    }
+
+    document.getElementById("modal").addEventListener("click", function(e) {
+        if (e.target === this) fecharInstrucoes();
+    });
 </script>
 
 </body>
